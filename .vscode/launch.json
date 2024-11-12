@@ -8,7 +8,7 @@
             "name": "Run-Internal",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/main.exe",
+            "program": "${workspaceFolder}/build/main.exe",
             "args": [],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
@@ -25,15 +25,16 @@
             "osx": {
                 "MIMode": "lldb" // try "gdb" if lldb doesn't work
             },
+            "preLaunchTask": "Build"
         },
         {
             "name": "Run-External",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/main.exe",
+            "program": "${workspaceFolder}/build/main.exe",
             "args": [],
             "stopAtEntry": false,
-            "cwd": "${workspaceFolder}/",
+            "cwd": "${workspaceFolder}",
             "environment": [
                 {
                     "name": "DYLD_LIBRARY_PATH",
@@ -49,9 +50,6 @@
                 "MIMode": "lldb" // try "gdb" if lldb doesn't work
             },
             "preLaunchTask": "Build"
-        },
-        {
-
         }
     ]
 }
