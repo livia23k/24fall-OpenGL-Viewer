@@ -1,0 +1,57 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Run-Internal",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/main.exe",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}",
+            "environment": [
+                {
+                    "name": "DYLD_LIBRARY_PATH",
+                    "value": "${workspaceFolder}/lib/glfw/lib-arm64"
+                }
+            ],
+            "windows": {
+                "type": "cppvsdbg",
+                "console": "internalConsole"
+            },
+            "osx": {
+                "MIMode": "lldb" // try "gdb" if lldb doesn't work
+            },
+        },
+        {
+            "name": "Run-External",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/main.exe",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}/",
+            "environment": [
+                {
+                    "name": "DYLD_LIBRARY_PATH",
+                    "value": "${workspaceFolder}/lib/glfw/lib-arm64"
+                }
+            ],
+            "externalConsole": true,
+            "windows": {
+                "type": "cppvsdbg",
+                "console": "externalConsole"
+            },
+            "osx": {
+                "MIMode": "lldb" // try "gdb" if lldb doesn't work
+            },
+            "preLaunchTask": "Build"
+        },
+        {
+
+        }
+    ]
+}

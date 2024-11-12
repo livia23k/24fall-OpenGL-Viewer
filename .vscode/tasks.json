@@ -1,0 +1,33 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"type": "cppbuild",
+			"label": "Build",
+			"command": "g++",
+			"args": [
+				"-std=c++17",
+				"-fdiagnostics-color=always",
+				"-Wall",
+				"-g",
+				"-I${workspaceFolder}/include",
+				"-L${workspaceFolder}/lib",
+				"${workspaceFolder}/lib/glad/glad.c",
+				"${workspaceFolder}/lib/glfw/lib-arm64/libglfw.3.dylib",
+				"${workspaceFolder}/src/*.cpp",
+				"-o",
+				"${workspaceFolder}/main.exe",
+				"-framework",
+				"OpenGL",
+			],
+			"problemMatcher": [
+				"$gcc"
+			],
+			"group": {
+				"kind": "build",
+				"isDefault": true
+			},
+			"detail": "compiler: g++"
+		}
+	]
+}
