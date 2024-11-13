@@ -33,7 +33,7 @@ void Application::Initialize()
     renderer.Initialize();
 
     // Model Preparation
-    if (!plyManager.LoadPLY("assets/ply/debug.ply"))
+    if (!plyManager.LoadPLY("assets/ply/debug2.ply"))
     {
         std::cerr << "Failed to load the PLY model!" << std::endl;
         return;
