@@ -19,12 +19,25 @@ WindowMgr::~WindowMgr()
     glfwTerminate();
 }
 
+void WindowMgr::framebuffer_size_callback(GLFWwindow* window, int width, int height)
+{
+    glViewport(0, 0, width, height);
+}
+
 bool WindowMgr::CreateWindow(int width, int height, const std::string &title)
 {
+    // glfw: initialize and configure
+    // ------------------------------
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+    
+#ifdef __APPLE__
+    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+#endif
 
+    // glfw window creation
+    // --------------------
     window = glfwCreateWindow(width, height, title.c_str(), nullptr, nullptr);
     if (!window)
     {
@@ -34,6 +47,7 @@ bool WindowMgr::CreateWindow(int width, int height, const std::string &title)
     }
 
     glfwMakeContextCurrent(window);
+    glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
     return true;
 }
 
