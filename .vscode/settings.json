@@ -66,6 +66,7 @@
         "variant": "cpp",
         "system_error": "cpp",
         "format": "cpp",
-        "thread": "cpp"
+        "thread": "cpp",
+        "*.txx": "cpp"
     }
 }

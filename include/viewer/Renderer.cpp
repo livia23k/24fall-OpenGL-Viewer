@@ -33,17 +33,25 @@ void Renderer::Clean()
 
 std::string Renderer::LoadShaderSource(const std::string &file_path)
 {
-    std::ifstream shader_file(file_path);
-    if (!shader_file.is_open())
+    std::string source;
+    std::ifstream shader_file;
+    shader_file.exceptions(std::ifstream::failbit | std::ifstream::badbit);
+    try
     {
-        std::cerr << "Failed to open shader file: " << file_path << std::endl;
-        return "";
-    }
+        shader_file.open(file_path);
+        std::stringstream shader_stream;
+        shader_stream << shader_file.rdbuf();
+        shader_file.close();
+        source = shader_stream.str();
 
-    std::stringstream shader_stream;
-    shader_stream << shader_file.rdbuf();
-    shader_file.close();
-    return shader_stream.str();
+    }
+    catch(const std::exception& e)
+    {
+        std::cerr << "Failed to open shader file: " << file_path << "\n";
+        std::cerr << "Reason: " << e.what() << std::endl;
+    }
+    
+    return source;
 }
 
 void Renderer::CompileShader(const std::string &vert_path, const std::string &frag_path)
