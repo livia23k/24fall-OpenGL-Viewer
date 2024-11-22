@@ -18,20 +18,12 @@ struct Face
     std::vector<int32_t> indices;
 };
 
-struct Edge
-{
-    int32_t vertex1;
-    int32_t vertex2;
-    glm::vec3 color;
-};
-
 struct PLYModel
 {
     bool is_triangulated;
 
     std::vector<Vertex> vertices;
     std::vector<Face> faces;
-    std::vector<Edge> edges;
 
     PLYModel();
     ~PLYModel() = default;

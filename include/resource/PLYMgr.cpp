@@ -18,7 +18,6 @@ bool PLYMgr::LoadPLY(const std::string &filepath)
     std::string line;
     int vertex_count = 0;
     int face_count = 0;
-    int edge_count = 0;
     bool is_reading_header = true;
 
     // Parse the header
@@ -38,10 +37,6 @@ bool PLYMgr::LoadPLY(const std::string &filepath)
             else if (token == "face")
             {
                 ss >> face_count;
-            }
-            else if (token == "edge")
-            {
-                ss >> edge_count;
             }
         }
         else if (token == "end_header")
@@ -91,25 +86,10 @@ bool PLYMgr::LoadPLY(const std::string &filepath)
         model.faces.push_back(face);
     }
 
-    // Load edges
-    for (int i = 0; i < edge_count; ++i)
-    {
-        if (!std::getline(file, line))
-        {
-            std::cerr << "Error: Unexpected end of file while reading edges." << std::endl;
-            return false;
-        }
-        std::istringstream ss(line);
-        Edge edge;
-        int r, g, b;
+    // Emit edges
+    // ...
 
-        ss >> edge.vertex1 >> edge.vertex2;
-        ss >> r >> g >> b;
-
-        edge.color = glm::vec3(r / 255.0f, g / 255.0f, b / 255.0f); // Normalize color to [0,1]
-        model.edges.push_back(edge);
-    }
-
+    // Save model
     models.push_back(model);
 
     file.close();

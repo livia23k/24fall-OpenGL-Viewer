@@ -5,7 +5,7 @@
 #include <fstream>
 #include <sstream>
 
-Renderer::Renderer() : vao(0), vbo(0), ebo(0), edge_ebo(0), num_face_indices(0), num_edge_indices(0), shader_program(0) {}
+Renderer::Renderer() : vao(0), vbo(0), ebo(0), num_face_indices(0), shader_program(0) {}
 
 Renderer::~Renderer()
 {
@@ -19,14 +19,12 @@ void Renderer::Initialize()
     glGenVertexArrays(1, &vao);
     glGenBuffers(1, &vbo);
     glGenBuffers(1, &ebo);
-    glGenBuffers(1, &edge_ebo);
 }
 
 void Renderer::Clean()
 {
     glDeleteBuffers(1, &vbo);
     glDeleteBuffers(1, &ebo);
-    glDeleteBuffers(1, &edge_ebo);
     glDeleteVertexArrays(1, &vao);
 
     glDeleteProgram(shader_program);
@@ -116,15 +114,6 @@ void Renderer::UploadModel(const PLYModel &model)
         face_indices.insert(face_indices.end(), face.indices.begin(), face.indices.end());
     }
     num_face_indices = face_indices.size();
-
-    // Prepare edge indices
-    std::vector<GLuint> edge_indices;
-    for (const auto &edge : model.edges)
-    {
-        edge_indices.push_back(edge.vertex1);
-        edge_indices.push_back(edge.vertex2);
-    }
-    num_edge_indices = edge_indices.size();
 
     // Upload vertex data
     glBindVertexArray(vao);

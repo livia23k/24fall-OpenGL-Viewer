@@ -6,7 +6,6 @@ PLYModel::PLYModel()
 
     vertices.clear();
     faces.clear();
-    edges.clear();
 };
 
 void PLYModel::Triangulate()

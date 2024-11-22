@@ -1,5 +1,5 @@
 ---
 triple:          'arm64-apple-darwin'
-binary-path:     '/Users/stellai/Documents/Course/24fall-24678/Final/Viewer/build/main.exe'
+binary-path:     '/Users/stellai/Documents/Course/24fall-24678/Final.nosync/Viewer/build/main.exe'
 relocations:     []
 ...
