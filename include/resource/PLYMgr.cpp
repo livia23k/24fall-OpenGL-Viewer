@@ -57,10 +57,17 @@ bool PLYMgr::LoadPLY(const std::string &filepath)
         Vertex vertex;
         int r, g, b;
 
-        ss >> vertex.position.x >> vertex.position.y >> vertex.position.z;
-        ss >> r >> g >> b;
+        model.bbox.enclose(vertex.position);
 
-        vertex.color = glm::vec3(r / 255.0f, g / 255.0f, b / 255.0f); // Normalize color to [0,1]
+        if (vertex.position.y > 10000) {
+            std::cerr << "Incorrect vertex position: " << vertex.position.x << ", " << vertex.position.y << vertex.position.z << std::endl;
+        }
+
+        ss >> vertex.position.x >> vertex.position.y >> vertex.position.z;
+        // ss >> r >> g >> b;
+        // vertex.color = glm::vec3(r / 255.0f, g / 255.0f, b / 255.0f); // Normalize color to [0,1]
+
+        vertex.color = glm::vec3(0.0f, 1.0f, 0.0f); // Pre-defined color: Green
         model.vertices.push_back(vertex);
     }
 

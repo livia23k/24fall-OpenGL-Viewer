@@ -51,6 +51,7 @@ void Application::Run()
         glClearColor(0.9f, 0.9f, 0.9f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
+        renderer.UpdateCameraForModel(plyManager.models[0]);
         renderer.Render();
 
         windowManager.SwapBuffers();

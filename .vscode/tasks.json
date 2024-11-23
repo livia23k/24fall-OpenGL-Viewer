@@ -18,6 +18,8 @@
 				"${workspaceFolder}/src/*.cpp",
 				"${workspaceFolder}/include/viewer/*.cpp",
 				"${workspaceFolder}/include/resource/*.cpp",
+				"${workspaceFolder}/include/datatype/*.cpp",
+				"${workspaceFolder}/include/camera/camera.cpp",
 				"-o",
 				"${workspaceFolder}/build/main.exe",
 				"-framework",

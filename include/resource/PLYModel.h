@@ -1,4 +1,5 @@
 #pragma once
+#include "datatype/BBox.h"
 
 #include <string>
 #include <vector>
@@ -21,6 +22,7 @@ struct Face
 struct PLYModel
 {
     bool is_triangulated;
+    BBox bbox;
 
     std::vector<Vertex> vertices;
     std::vector<Face> faces;

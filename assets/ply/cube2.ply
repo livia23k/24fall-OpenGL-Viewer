@@ -1,0 +1,34 @@
+ply
+format ascii 1.0
+comment Low-poly 3D cube
+element vertex 8
+property float x
+property float y
+property float z
+property uchar red
+property uchar green
+property uchar blue
+element face 12
+property list uchar int vertex_index
+end_header
+-0.5 -0.5 -0.5 255 0 0     # Vertex 0: bottom-left-back, red
+ 0.5 -0.5 -0.5 0 255 0     # Vertex 1: bottom-right-back, green
+ 0.5  0.5 -0.5 0 0 255     # Vertex 2: top-right-back, blue
+-0.5  0.5 -0.5 255 255 0   # Vertex 3: top-left-back, yellow
+-0.5 -0.5  0.5 255 0 255   # Vertex 4: bottom-left-front, magenta
+ 0.5 -0.5  0.5 0 255 255   # Vertex 5: bottom-right-front, cyan
+ 0.5  0.5  0.5 128 128 128 # Vertex 6: top-right-front, gray
+-0.5  0.5  0.5 255 255 255 # Vertex 7: top-left-front, white
+
+3 0 1 2   # Face 0: back-bottom-right triangle
+3 0 2 3   # Face 1: back-top-left triangle
+3 4 5 6   # Face 2: front-bottom-right triangle
+3 4 6 7   # Face 3: front-top-left triangle
+3 0 1 5   # Face 4: bottom-back-right triangle
+3 0 5 4   # Face 5: bottom-front-left triangle
+3 2 3 7   # Face 6: top-back-left triangle
+3 2 7 6   # Face 7: top-front-right triangle
+3 0 4 7   # Face 8: left-front-top triangle
+3 0 7 3   # Face 9: left-back-top triangle
+3 1 5 6   # Face 10: right-front-bottom triangle
+3 1 6 2   # Face 11: right-back-bottom triangle
