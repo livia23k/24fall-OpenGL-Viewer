@@ -178,47 +178,16 @@ void printMatrix(const glm::mat4 &matrix, const std::string &name = "Matrix") {
 
 void Renderer::UpdateCameraForModel(const PLYModel &target_model)
 {
-    // // [Version 1]
-    // // construct matrix
-    // glm::mat4 transform = createTransformationMatrix();
-    // printMatrix(transform, "Transformation Matrix");
+    glm::vec3 model_center = target_model.bbox.center();
+    float model_radius = glm::length(target_model.bbox.max - target_model.bbox.min) * 0.5f;
+    camera.look_at_model(model_center, model_radius);
 
-    // // upload matrix
-    // GLuint transform_loc = glGetUniformLocation(this->shader_program, "transform");
-    // if (transform_loc == -1) {
-    //     std::cerr << "Uniform 'transform' not found in the shader program" << std::endl;
-    // }
-    // glUniformMatrix4fv(transform_loc, 1, GL_FALSE, glm::value_ptr(transform));
-
-    // // [Version 2]
-    // construct matrix
-    // glm::mat4 transform = glm::mat4(1.0f); // make sure to initialize matrix to identity matrix first
-    // transform = glm::translate(transform, glm::vec3(0.0f, -0.5f, 0.0f));
-    // transform = glm::rotate(transform, (float)glfwGetTime(), glm::vec3(0.0f, 0.0f, 1.0f));
-
-    // // upload matrix
-    // unsigned int transformLoc = glGetUniformLocation(shader_program, "transform");
-    // glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(transform));
-
-
-    // [Version 3] works for bunny and debug2
-
-    float model_bbox_radius = glm::length(target_model.bbox.max - target_model.bbox.min) * 0.5f;
-    float distance = model_bbox_radius / glm::tan(camera.camera_attributes.vfov * 0.5f);
-    // distance += model_bbox_radius;
-
-    camera.camera_attributes.far = distance * 1.05f;
-
-    glm::vec3 new_target_position = target_model.bbox.center();
-    glm::vec3 new_camera_position = camera.target_position + glm::vec3(0.0f, 0.0f, distance);
-    camera.update_camera_vectors_and_angles_from_target(new_camera_position, new_target_position);
-
-    glm::mat4 transform = camera.get_view_matrix();
+    glm::mat4 transform = camera.get_perspective_matrix();
     unsigned int transformLoc = glGetUniformLocation(shader_program, "transform");
     glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(transform));
 
     // [DEBUG INFO]
-    std::cout << "BBox Radius: " << model_bbox_radius << "\n\n";
+    std::cout << "BBox Radius: " << model_radius << "\n\n";
 
     std::cout << "BBox Min: (" << target_model.bbox.min.x << ", " 
             << target_model.bbox.min.y << ", " 
@@ -238,7 +207,7 @@ void Renderer::Render()
 {
     glUseProgram(shader_program);
 
-    glDisable(GL_CULL_FACE);
+    // glDisable(GL_CULL_FACE);
 
     glBindVertexArray(vao);
 

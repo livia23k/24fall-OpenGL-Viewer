@@ -41,41 +41,29 @@ struct Camera
         bool pitch_down;
     } postures;
 
-    struct Camera_Sensitivity {
-        float kb_forward;
-        float kb_upward;
-        float kb_rightward;
-        float kb_yaw;
-        float kb_pitch;
-        float mouse_yaw;
-        float mouse_pitch;
-        bool sensitivity_increase;
-        bool sensitivity_decrease;
-    } sensitivity;
-
     /* cr. camera parameters learned from Learn OpenGL 
            https://learnopengl.com/Getting-started/Camera# */
 
     glm::vec3 position;
-    glm::vec3 target_position;
 
     glm::vec3 front;
     glm::vec3 right;
-    glm::vec3 up;
+    glm::vec3 world_up;
 
     float yaw;
     float pitch;
-    float roll;
 
     float unit_angle;
     float unit_sensitivity;
+
+    float angle_sensitivity;
+    float mouse_sensitivity;
 
     // =============================================
     // Helper Functions
 
     void reset_camera_control_status();
-    void update_camera_vectors_and_angles_from_target(const glm::vec3 &new_camera_position, const glm::vec3 &new_target_position);
-    void update_camera_eular_angles_from_vectors();
+    void look_at_model(const glm::vec3 &model_center, float model_radius);
     void update_camera_vectors_from_eular_angles();
 
     glm::mat4 get_view_matrix();

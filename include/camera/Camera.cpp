@@ -22,20 +22,18 @@ Camera::Camera()
     postures.pitch_down = false;
 
     // camera settings
-    sensitivity.kb_forward = 0.15f;
-    sensitivity.kb_rightward = 0.1f;
-    sensitivity.kb_upward = 0.08f;
-    sensitivity.kb_yaw = 0.5f;
-    sensitivity.kb_pitch = 0.25f;
-    sensitivity.mouse_yaw = 0.1f;
-    sensitivity.mouse_pitch = 0.1f;
+    yaw = 0.0f;
+    pitch = 0.0f;
+
+    world_up = glm::vec3{0.0f, 1.0f, 0.0f};
 
     unit_angle = 1.f;
     unit_sensitivity = 0.001f;
 
-    roll = 0.f;
+    angle_sensitivity = 0.15f;
+    mouse_sensitivity = 0.1f;
 
-    update_camera_vectors_and_angles_from_target(glm::vec3(0.0f, 0.0f, 4.0f), glm::vec3(0.0f, 0.0f, 0.0f));
+    this->look_at_model(glm::vec3(0.0f, 0.0f, 0.0f), 1.0f);
 }
 
 Camera::~Camera()
@@ -57,37 +55,19 @@ void Camera::reset_camera_control_status()
     postures.pitch_down = false;
 }
 
-void Camera::update_camera_vectors_and_angles_from_target(const glm::vec3 &new_camera_position, const glm::vec3 &new_target_position)
+void Camera::look_at_model(const glm::vec3 &model_center, float model_radius)
 {
-    target_position = new_target_position;
-    position = new_camera_position;
+    float distance = (model_radius / glm::tan(camera_attributes.vfov * 0.5f)) + model_radius;
 
-    up = glm::vec3{0.0f, 1.0f, 0.0f};
-    front = glm::normalize(target_position - position);
-    right = glm::normalize(glm::cross(up, front));
+    position = model_center + glm::vec3(0.0f, 0.0f, distance);
 
-    update_camera_eular_angles_from_vectors();
-}
-
-void Camera::update_camera_eular_angles_from_vectors()
-{
-    yaw = glm::degrees(glm::atan(front.x, front.z));
-    pitch = glm::degrees(glm::asin(-front.y));
+    front = glm::normalize(model_center - position);
+    right = glm::normalize(glm::cross(world_up, front));
 }
 
 void Camera::update_camera_vectors_from_eular_angles()
 {
     /* cr. https://learnopengl.com/Getting-started/Camera based on OpenGL coordinates (+Y up, -Z forward, +X right) */
-
-    if (pitch > 89.f)
-        pitch = 89.f;
-    if (pitch < -89.f)
-        pitch = -89.f;
-
-    if (yaw > 180.f)
-        yaw -= 360.f;
-    if (yaw < -180.f)
-        yaw += 360.f;
 
     const float yawRad = glm::radians(yaw);
     const float pitchRad = glm::radians(pitch);
@@ -103,15 +83,14 @@ void Camera::update_camera_vectors_from_eular_angles()
 
     front = glm::normalize(front);
 
-    // up = glm::vec3{0.0f, 1.0f, 0.0f}; // up remains upward
-    right = glm::normalize(glm::cross(front, up));
+    right = glm::normalize(glm::cross(front, world_up));
 }
 
 glm::mat4 Camera::get_view_matrix()
 {
-    return glm::lookAt(position,            // eye
-                       position + front,    // target
-                       up);                 // up
+    return glm::lookAt(position,         // eye
+                       position + front, // target
+                       world_up);        // up
 }
 
 glm::mat4 Camera::get_perspective_matrix()
