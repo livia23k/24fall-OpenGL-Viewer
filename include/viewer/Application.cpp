@@ -45,6 +45,7 @@ void Application::Initialize()
 
 void Application::Run()
 {
+    renderer.MakeCameraFocusOnModel(plyManager.models[0]);
 
     while (!windowManager.ShouldClose())
     {
@@ -52,7 +53,7 @@ void Application::Run()
         glClearColor(0.9f, 0.9f, 0.9f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        renderer.Render(plyManager.models[0]);
+        renderer.Render();
 
         windowManager.SwapBuffers();
         windowManager.PollEvents();

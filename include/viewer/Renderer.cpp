@@ -105,6 +105,12 @@ void Renderer::CompileShader(const std::string &vert_path, const std::string &fr
     glDeleteShader(fragment_shader);
 }
 
+void Renderer::EnableDepthTestSetting()
+{
+    glEnable(GL_DEPTH_TEST);
+    glDepthFunc(GL_LESS);
+}
+
 void Renderer::UploadModel(const PLYModel &model)
 {
     // Prepare vertex data
@@ -146,34 +152,28 @@ void Renderer::UploadModel(const PLYModel &model)
     glBindVertexArray(0);
 }
 
-void Renderer::UploadTransformLookingAtModel(const PLYModel &target_model)
+void Renderer::UploadTransformMatrix()
 {
-    glm::vec3 model_center = target_model.bbox.center();
-    float model_radius = glm::length(target_model.bbox.max - target_model.bbox.min) * 0.5f;
-    camera.look_at_model(model_center, model_radius);
-
     glm::mat4 transform = camera.get_perspective_matrix();
     unsigned int transformLoc = glGetUniformLocation(shader_program, "transform");
     glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(transform));
 }
 
-void Renderer::EnableDepthTestSetting()
+void Renderer::MakeCameraFocusOnModel(const PLYModel &target_model)
 {
-    glEnable(GL_DEPTH_TEST);
-    glDepthFunc(GL_LESS);
+    glm::vec3 model_center = target_model.bbox.center();
+    float model_radius = glm::length(target_model.bbox.max - target_model.bbox.min) * 0.5f;
+    camera.look_at_model(model_center, model_radius);
 }
 
-// void Renderer::Render()
-void Renderer::Render(const PLYModel &target_model)
+void Renderer::Render()
 {
     glUseProgram(shader_program);
+
     EnableDepthTestSetting();
+    UploadTransformMatrix();
 
     glBindVertexArray(vao);
-
-    UploadTransformLookingAtModel(target_model);
-
     glDrawElements(GL_TRIANGLES, num_face_indices, GL_UNSIGNED_INT, 0);
-
     glBindVertexArray(0);
 }
