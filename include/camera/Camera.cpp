@@ -23,7 +23,7 @@ Camera::Camera()
     postures.pitch_down = false;
 
     // camera settings
-    yaw = 0.0f;
+    yaw = -90.0f;
     pitch = 0.0f;
 
     world_up = glm::vec3{0.0f, 1.0f, 0.0f};

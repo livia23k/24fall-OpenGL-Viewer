@@ -65,6 +65,7 @@ bool WindowMgr::CreateWindow(int width, int height, const std::string &title)
     glfwSetWindowUserPointer(window, this);
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
     glfwSetCursorPosCallback(window, mouse_callback);
+    glfwSetMouseButtonCallback(window, mouse_button_callback);
 
     window_w = width;
     window_h = height;
@@ -91,12 +92,28 @@ void WindowMgr::SwapBuffers()
 }
 
 
-// glfw: whenever the mouse moves, this callback is called
-// -------------------------------------------------------
+void WindowMgr::mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
+{
+    WindowMgr* mgr = static_cast<WindowMgr*>(glfwGetWindowUserPointer(window));
+    if (!mgr)
+        return;
+
+    if (button == GLFW_MOUSE_BUTTON_LEFT)
+    {
+        if (action == GLFW_PRESS)
+        {
+            mgr->first_mouse = true;
+        }
+    }
+}
+
 void WindowMgr::mouse_callback(GLFWwindow* window, double xposIn, double yposIn)
 {
     WindowMgr* mgr = static_cast<WindowMgr*>(glfwGetWindowUserPointer(window));
     if (!mgr)
+        return;
+
+    if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) != GLFW_PRESS)
         return;
 
     float xpos = static_cast<float>(xposIn);
