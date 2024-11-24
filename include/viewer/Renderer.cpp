@@ -146,37 +146,7 @@ void Renderer::UploadModel(const PLYModel &model)
     glBindVertexArray(0);
 }
 
-// Create a transformation matrix
-glm::mat4 createTransformationMatrix() {
-    glm::mat4 identity = glm::mat4(1.0f); // Identity matrix
-
-    // Translation: Move backward in Z-axis by -2.0
-    glm::mat4 translation = glm::translate(identity, glm::vec3(0.0f, 0.0f, -2.0f));
-
-    // Rotation: Rotate 45 degrees around Y-axis
-    float angle = glm::radians(45.0f);
-    glm::mat4 rotation = glm::rotate(identity, angle, glm::vec3(0.0f, 1.0f, 0.0f));
-
-    // Scaling: Scale uniformly by 2.0
-    glm::mat4 scaling = glm::scale(identity, glm::vec3(2.0f, 2.0f, 2.0f));
-
-    // Combine transformations: scale -> rotate -> translate
-    glm::mat4 model = translation * rotation * scaling;
-
-    return model;
-}
-
-void printMatrix(const glm::mat4 &matrix, const std::string &name = "Matrix") {
-    std::cout << name << ":\n";
-    const float *data = glm::value_ptr(matrix);
-    for (int i = 0; i < 16; ++i) {
-        std::cout << data[i] << " ";
-        if ((i + 1) % 4 == 0) std::cout << std::endl;
-    }
-    std::cout << std::endl;
-}
-
-void Renderer::UpdateCameraForModel(const PLYModel &target_model)
+void Renderer::UploadTransformLookingAtModel(const PLYModel &target_model)
 {
     glm::vec3 model_center = target_model.bbox.center();
     float model_radius = glm::length(target_model.bbox.max - target_model.bbox.min) * 0.5f;
@@ -185,34 +155,24 @@ void Renderer::UpdateCameraForModel(const PLYModel &target_model)
     glm::mat4 transform = camera.get_perspective_matrix();
     unsigned int transformLoc = glGetUniformLocation(shader_program, "transform");
     glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(transform));
-
-    // [DEBUG INFO]
-    std::cout << "BBox Radius: " << model_radius << "\n\n";
-
-    std::cout << "BBox Min: (" << target_model.bbox.min.x << ", " 
-            << target_model.bbox.min.y << ", " 
-            << target_model.bbox.min.z << ")\n";
-    std::cout << "BBox Max: (" << target_model.bbox.max.x << ", " 
-            << target_model.bbox.max.y << ", " 
-            << target_model.bbox.max.z << ")\n";
-    std::cout << "BBox Center: (" << target_model.bbox.center().x << ", " 
-            << target_model.bbox.center().y << ", " 
-            << target_model.bbox.center().z << ")\n\n";
-
-    printMatrix(camera.get_view_matrix(), "View Matrix");
-    printMatrix(camera.get_perspective_matrix(), "Perspective Matrix");
 }
 
-void Renderer::Render()
+void Renderer::EnableDepthTestSetting()
+{
+    glEnable(GL_DEPTH_TEST);
+    glDepthFunc(GL_LESS);
+}
+
+// void Renderer::Render()
+void Renderer::Render(const PLYModel &target_model)
 {
     glUseProgram(shader_program);
-
-    // glDisable(GL_CULL_FACE);
+    EnableDepthTestSetting();
 
     glBindVertexArray(vao);
 
-    // Render faces
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
+    UploadTransformLookingAtModel(target_model);
+
     glDrawElements(GL_TRIANGLES, num_face_indices, GL_UNSIGNED_INT, 0);
 
     glBindVertexArray(0);

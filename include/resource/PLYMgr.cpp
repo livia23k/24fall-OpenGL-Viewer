@@ -19,6 +19,7 @@ bool PLYMgr::LoadPLY(const std::string &filepath)
     int vertex_count = 0;
     int face_count = 0;
     bool is_reading_header = true;
+    bool has_rgb_info = false;
 
     // Parse the header
     while (is_reading_header && std::getline(file, line))
@@ -43,6 +44,18 @@ bool PLYMgr::LoadPLY(const std::string &filepath)
         {
             is_reading_header = false;
         }
+        else if (token == "property")
+        {
+            ss >> token;
+            if (token == "uchar")
+            {
+                ss >> token;
+                if (token == "red")
+                {
+                    has_rgb_info = true;
+                }
+            }
+        }
     }
 
     // Load vertices
@@ -64,10 +77,17 @@ bool PLYMgr::LoadPLY(const std::string &filepath)
         }
 
         ss >> vertex.position.x >> vertex.position.y >> vertex.position.z;
-        // ss >> r >> g >> b;
-        // vertex.color = glm::vec3(r / 255.0f, g / 255.0f, b / 255.0f); // Normalize color to [0,1]
 
-        vertex.color = glm::vec3(0.0f, 1.0f, 0.0f); // Pre-defined color: Green
+        if (has_rgb_info)
+        {
+            ss >> r >> g >> b;
+            vertex.color = glm::vec3(r / 255.0f, g / 255.0f, b / 255.0f); // Normalize color to [0,1]
+        }
+        else
+        {
+            vertex.color = glm::vec3(0.0f, 1.0f, 0.0f); // Pre-defined color: Green
+        }
+        
         model.vertices.push_back(vertex);
     }
 

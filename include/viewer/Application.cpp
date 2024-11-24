@@ -33,7 +33,7 @@ void Application::Initialize()
     renderer.Initialize();
 
     // Model Preparation
-    if (!plyManager.LoadPLY("assets/ply/pyramid.ply"))
+    if (!plyManager.LoadPLY("assets/ply/cube.ply"))
     {
         std::cerr << "Failed to load the PLY model!" << std::endl;
         return;
@@ -45,14 +45,14 @@ void Application::Initialize()
 
 void Application::Run()
 {
+
     while (!windowManager.ShouldClose())
     {
         // Clear screen
         glClearColor(0.9f, 0.9f, 0.9f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        renderer.UpdateCameraForModel(plyManager.models[0]);
-        renderer.Render();
+        renderer.Render(plyManager.models[0]);
 
         windowManager.SwapBuffers();
         windowManager.PollEvents();

@@ -14,9 +14,11 @@ struct Renderer
     void Clean();
 
     void UploadModel(const PLYModel &model);
-    void UpdateCameraForModel(const PLYModel &target_model);
+    void UploadTransformLookingAtModel(const PLYModel &target_model);
 
-    void Render();
+    void EnableDepthTestSetting();
+    // void Render();
+    void Render(const PLYModel &model);
 
 private:
     GLuint vao;              // Vertex Array Object
