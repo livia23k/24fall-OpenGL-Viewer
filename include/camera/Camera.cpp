@@ -1,4 +1,5 @@
 #include "Camera.h"
+#include <glad/glad.h>
 
 Camera::Camera()
 {
@@ -101,4 +102,22 @@ glm::mat4 Camera::get_perspective_matrix()
                camera_attributes.near,
                camera_attributes.far) *
            get_view_matrix();
+}
+
+// processes input received from a mouse input system. Expects the offset value in both the x and y direction.
+void Camera::ProcessMouseMovement(float x_offset, float y_offset)
+{
+    x_offset *= mouse_sensitivity;
+    y_offset *= mouse_sensitivity;
+
+    yaw   += x_offset;
+    pitch += y_offset;
+
+    // make sure that when pitch is out of bounds, screen doesn't get flipped
+    if (pitch > 89.0f)
+        pitch = 89.0f;
+    if (pitch < -89.0f)
+        pitch = -89.0f;
+
+    update_camera_vectors_from_eular_angles();
 }

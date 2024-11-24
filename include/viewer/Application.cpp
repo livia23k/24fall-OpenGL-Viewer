@@ -16,6 +16,8 @@ void Application::Initialize()
         std::cerr << "Failed to initialize the application!" << std::endl;
         return;
     }
+    
+    windowManager.camera = &(renderer.camera);
 
     // GLAD Function Loader
     // -------------------

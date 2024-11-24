@@ -2,7 +2,7 @@
 
 #include <iostream>
 
-WindowMgr::WindowMgr() : window(nullptr)
+WindowMgr::WindowMgr() : first_mouse(true), window_w(800), window_h(600), last_x(400), last_y(300), window(nullptr)
 {
     if (!glfwInit())
     {
@@ -19,9 +19,24 @@ WindowMgr::~WindowMgr()
     glfwTerminate();
 }
 
-void WindowMgr::framebuffer_size_callback(GLFWwindow* window, int width, int height)
+void WindowMgr::HandleFramebufferResize(int width, int height)
 {
     glViewport(0, 0, width, height);
+
+    window_w = width;
+    window_h = height;
+
+    last_x = window_w / 2.0f;
+    last_y = window_h / 2.0f;
+}
+
+void WindowMgr::framebuffer_size_callback(GLFWwindow* window, int width, int height)
+{
+    WindowMgr* mgr = static_cast<WindowMgr*>(glfwGetWindowUserPointer(window));
+    if (mgr)
+    {
+        mgr->HandleFramebufferResize(width, height); // Call the instance-specific logic
+    }
 }
 
 bool WindowMgr::CreateWindow(int width, int height, const std::string &title)
@@ -47,7 +62,16 @@ bool WindowMgr::CreateWindow(int width, int height, const std::string &title)
     }
 
     glfwMakeContextCurrent(window);
+    glfwSetWindowUserPointer(window, this);
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
+    glfwSetCursorPosCallback(window, mouse_callback);
+
+    window_w = width;
+    window_h = height;
+
+    last_x = window_w / 2.0f;
+    last_y = window_h / 2.0f;
+
     return true;
 }
 
@@ -64,4 +88,32 @@ void WindowMgr::PollEvents()
 void WindowMgr::SwapBuffers()
 {
     glfwSwapBuffers(window);
+}
+
+
+// glfw: whenever the mouse moves, this callback is called
+// -------------------------------------------------------
+void WindowMgr::mouse_callback(GLFWwindow* window, double xposIn, double yposIn)
+{
+    WindowMgr* mgr = static_cast<WindowMgr*>(glfwGetWindowUserPointer(window));
+    if (!mgr)
+        return;
+
+    float xpos = static_cast<float>(xposIn);
+    float ypos = static_cast<float>(yposIn);
+
+    if (mgr->first_mouse)
+    {
+        mgr->last_x = xpos;
+        mgr->last_y = ypos;
+        mgr->first_mouse = false;
+    }
+
+    float xoffset = xpos - mgr->last_x;
+    float yoffset = mgr->last_y - ypos; // reversed since y-coordinates go from bottom to top
+
+    mgr->last_x = xpos;
+    mgr->last_y = ypos;
+
+    mgr->camera->ProcessMouseMovement(xoffset, yoffset);
 }

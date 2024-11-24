@@ -7,6 +7,9 @@
 
 struct Renderer
 {
+public:
+    Camera camera;
+
     Renderer();
     ~Renderer();
 
@@ -29,7 +32,6 @@ private:
     size_t num_face_indices; // Number of face indices
 
     GLuint shader_program;
-    Camera camera;
 
     std::string LoadShaderSource(const std::string &filePath);    
     void CompileShader(const std::string &vertexShaderSource, const std::string &fragmentShaderSource);

@@ -68,6 +68,6 @@ struct Camera
 
     glm::mat4 get_view_matrix();
     glm::mat4 get_perspective_matrix();
-    void update_dynamic_camera(float time);
 
+    void ProcessMouseMovement(float xoffset, float yoffset);
 };
