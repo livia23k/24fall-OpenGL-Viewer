@@ -35,7 +35,7 @@ void Application::Initialize()
     renderer.Initialize();
 
     // Model Preparation
-    if (!plyManager.LoadPLY("assets/ply/cube.ply"))
+    if (!plyManager.LoadPLY("assets/ply/bunny.ply"))
     {
         std::cerr << "Failed to load the PLY model!" << std::endl;
         return;
@@ -43,6 +43,11 @@ void Application::Initialize()
 
     // Create buffer for the Model
     renderer.UploadModel(plyManager.models[0]);
+
+
+    // Frame info initialization
+    // -------------------------
+    last_frame = static_cast<float>(glfwGetTime());
 }
 
 void Application::Run()
@@ -51,6 +56,13 @@ void Application::Run()
 
     while (!windowManager.ShouldClose())
     {
+        float current_frame = static_cast<float>(glfwGetTime());
+        float delta_time = current_frame - last_frame;
+        last_frame = current_frame;
+
+        // Update camera position
+        renderer.camera.ProcessKeyboard(delta_time);
+
         // Clear screen
         glClearColor(0.9f, 0.9f, 0.9f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);

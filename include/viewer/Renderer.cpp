@@ -9,7 +9,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-Renderer::Renderer() : vao(0), vbo(0), ebo(0), num_face_indices(0), shader_program(0), camera() {}
+Renderer::Renderer() : camera(), vao(0), vbo(0), ebo(0), num_face_indices(0), shader_program(0) {}
 
 Renderer::~Renderer()
 {

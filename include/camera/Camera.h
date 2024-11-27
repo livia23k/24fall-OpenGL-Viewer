@@ -56,7 +56,7 @@ struct Camera
     float unit_angle;
     float unit_sensitivity;
 
-    float angle_sensitivity;
+    float move_sensitivity;
     float mouse_sensitivity;
 
     // =============================================
@@ -70,4 +70,5 @@ struct Camera
     glm::mat4 get_perspective_matrix();
 
     void ProcessMouseMovement(float xoffset, float yoffset);
+    void ProcessKeyboard(float deltaTime);
 };

@@ -66,6 +66,7 @@ bool WindowMgr::CreateWindow(int width, int height, const std::string &title)
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
     glfwSetCursorPosCallback(window, mouse_callback);
     glfwSetMouseButtonCallback(window, mouse_button_callback);
+    glfwSetKeyCallback(window, keyboard_callback);
 
     window_w = width;
     window_h = height;
@@ -133,4 +134,57 @@ void WindowMgr::mouse_callback(GLFWwindow* window, double xposIn, double yposIn)
     mgr->last_y = ypos;
 
     mgr->camera->ProcessMouseMovement(xoffset, yoffset);
+}
+
+void WindowMgr::keyboard_callback(GLFWwindow* window, int key, int scancode, int action, int mods) 
+{
+    WindowMgr* mgr = static_cast<WindowMgr*>(glfwGetWindowUserPointer(window));
+    if (!mgr || !mgr->camera) return;
+
+    if (action == GLFW_PRESS) 
+    {
+        switch (key) {
+        case GLFW_KEY_W:
+            mgr->camera->movements.forward = true;
+            break;
+        case GLFW_KEY_S:
+            mgr->camera->movements.backward = true;
+            break;
+        case GLFW_KEY_A:
+            mgr->camera->movements.left = true;
+            break;
+        case GLFW_KEY_D:
+            mgr->camera->movements.right = true;
+            break;
+        case GLFW_KEY_Q:
+            mgr->camera->movements.up = true;
+            break;
+        case GLFW_KEY_E:
+            mgr->camera->movements.down = true;
+            break;
+        }
+    } 
+    else if (action == GLFW_RELEASE) 
+    {
+        switch (key) {
+        case GLFW_KEY_W:
+            mgr->camera->movements.forward = false;
+            break;
+        case GLFW_KEY_S:
+            mgr->camera->movements.backward = false;
+            break;
+        case GLFW_KEY_A:
+            mgr->camera->movements.left = false;
+            break;
+        case GLFW_KEY_D:
+            mgr->camera->movements.right = false;
+            break;
+        case GLFW_KEY_Q:
+            mgr->camera->movements.up = false;
+            break;
+        case GLFW_KEY_E:
+            mgr->camera->movements.down = false;
+            break;
+        }
+    }
 }

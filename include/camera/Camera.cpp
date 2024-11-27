@@ -31,7 +31,7 @@ Camera::Camera()
     unit_angle = 1.f;
     unit_sensitivity = 0.001f;
 
-    angle_sensitivity = 0.15f;
+    move_sensitivity = 0.8f;
     mouse_sensitivity = 0.1f;
 
     this->look_at_model(glm::vec3(0.0f, 0.0f, 0.0f), 1.0f);
@@ -120,4 +120,22 @@ void Camera::ProcessMouseMovement(float x_offset, float y_offset)
         pitch = -89.0f;
 
     update_camera_vectors_from_eular_angles();
+}
+
+void Camera::ProcessKeyboard(float deltaTime)
+{
+    float velocity = move_sensitivity * deltaTime;
+
+    if (movements.forward)
+        position += front * velocity;
+    if (movements.backward)
+        position -= front * velocity;
+    if (movements.left)
+        position -= right * velocity;
+    if (movements.right)
+        position += right * velocity;
+    if (movements.up)
+        position += world_up * velocity;
+    if (movements.down)
+        position -= world_up * velocity;
 }

@@ -8,6 +8,8 @@
 struct Application
 {
 public:
+    float last_frame;
+
     void Initialize();
     void Run();
 
