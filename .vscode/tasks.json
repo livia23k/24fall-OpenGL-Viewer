@@ -20,6 +20,7 @@
 				"${workspaceFolder}/include/resource/*.cpp",
 				"${workspaceFolder}/include/datatype/*.cpp",
 				"${workspaceFolder}/include/camera/camera.cpp",
+				"${workspaceFolder}/include/imgui/*.cpp",
 				"-o",
 				"${workspaceFolder}/build/main.exe",
 				"-framework",
