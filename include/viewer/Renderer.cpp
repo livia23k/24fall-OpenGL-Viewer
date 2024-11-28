@@ -27,13 +27,26 @@ void Renderer::Initialize()
 
 void Renderer::Clean()
 {
-    glDeleteBuffers(1, &vbo);
-    glDeleteBuffers(1, &ebo);
-    glDeleteVertexArrays(1, &vao);
+    if (vbo != 0) {
+        glDeleteBuffers(1, &vbo);
+        vbo = 0;
+    }
 
-    glDeleteProgram(shader_program);
+    if (ebo != 0) {
+        glDeleteBuffers(1, &ebo);
+        ebo = 0;
+    }
+
+    if (vao != 0) {
+        glDeleteVertexArrays(1, &vao);
+        vao = 0;
+    }
+
+    if (shader_program != 0) {
+        glDeleteProgram(shader_program);
+        shader_program = 0;
+    }
 }
-
 
 std::string Renderer::LoadShaderSource(const std::string &file_path)
 {

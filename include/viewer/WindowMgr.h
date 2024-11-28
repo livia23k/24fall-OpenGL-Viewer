@@ -8,6 +8,7 @@ struct WindowMgr
 {
 public:
     Camera *camera;
+    GLFWwindow *window;
     
     WindowMgr();
     ~WindowMgr();
@@ -31,6 +32,4 @@ private:
     float window_h;
     float last_x;
     float last_y;
-    
-    GLFWwindow *window;
 };

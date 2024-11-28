@@ -67,6 +67,7 @@
         "system_error": "cpp",
         "format": "cpp",
         "thread": "cpp",
-        "*.txx": "cpp"
+        "*.txx": "cpp",
+        "cassert": "cpp"
     }
 }

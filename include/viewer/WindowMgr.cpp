@@ -2,12 +2,14 @@
 
 #include <iostream>
 
-WindowMgr::WindowMgr() : first_mouse(true), window_w(800), window_h(600), last_x(400), last_y(300), window(nullptr)
+WindowMgr::WindowMgr() : camera(nullptr), window(nullptr), first_mouse(true), window_w(800), window_h(600), last_x(400), last_y(300)
 {
     if (!glfwInit())
     {
         std::cerr << "Failed to initialize GLFW!" << std::endl;
     }
+
+    camera = new Camera();;
 }
 
 WindowMgr::~WindowMgr()

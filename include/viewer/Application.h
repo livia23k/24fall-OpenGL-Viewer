@@ -11,6 +11,7 @@ public:
     float last_frame;
 
     void Initialize();
+    void Clean();
     void Run();
 
 private:
