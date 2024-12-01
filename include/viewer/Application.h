@@ -14,6 +14,10 @@ public:
     void Clean();
     void Run();
 
+    void RenderObjectLibraryPanel();
+    void RenderCameraAndViewControls();
+    void RenderObjectManipulationPanel();
+
 private:
     WindowMgr windowManager;
     Renderer renderer;

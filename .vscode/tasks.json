@@ -21,6 +21,7 @@
 				"${workspaceFolder}/include/datatype/*.cpp",
 				"${workspaceFolder}/include/camera/camera.cpp",
 				"${workspaceFolder}/include/imgui/*.cpp",
+				"${workspaceFolder}/include/tinyfd/tinyfiledialogs.c",
 				"-o",
 				"${workspaceFolder}/build/main.exe",
 				"-framework",

@@ -116,6 +116,10 @@ bool PLYMgr::LoadPLY(const std::string &filepath)
     // Emit edges
     // ...
 
+    // Model info
+    model.name = std::filesystem::path(filepath).filename().string();
+    model.type = "Object";
+
     // Save model
     models.push_back(model);
 

@@ -9,7 +9,16 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-Renderer::Renderer() : camera(), vao(0), vbo(0), ebo(0), num_face_indices(0), shader_program(0) {}
+Renderer::Renderer() 
+    : camera(), 
+      num_face_indices(0), 
+      shader_program(0) 
+{
+    // Initialize OpenGL container maps
+    vao_map.clear();
+    vbo_map.clear();
+    ebo_map.clear();
+}
 
 Renderer::~Renderer()
 {
@@ -20,29 +29,39 @@ void Renderer::Initialize()
 {
     CompileShader("shader/vertex_shader.glsl", "shader/fragment_shader.glsl");
 
-    glGenVertexArrays(1, &vao);
-    glGenBuffers(1, &vbo);
-    glGenBuffers(1, &ebo);
+    glEnable(GL_DEPTH_TEST);
+    glDepthFunc(GL_LESS);
+
+    glEnable(GL_CULL_FACE);
+    glCullFace(GL_BACK);
+
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+    std::cout << "[Renderer] Renderer initialized successfully." << std::endl;
 }
 
 void Renderer::Clean()
 {
-    if (vbo != 0) {
-        glDeleteBuffers(1, &vbo);
-        vbo = 0;
-    }
-
-    if (ebo != 0) {
-        glDeleteBuffers(1, &ebo);
-        ebo = 0;
-    }
-
-    if (vao != 0) {
+    for (auto &[model, vao] : vao_map)
+    {
         glDeleteVertexArrays(1, &vao);
-        vao = 0;
+    }
+    for (auto &[model, vbo] : vbo_map)
+    {
+        glDeleteBuffers(1, &vbo);
+    }
+    for (auto &[model, ebo] : ebo_map)
+    {
+        glDeleteBuffers(1, &ebo);
     }
 
-    if (shader_program != 0) {
+    vao_map.clear();
+    vbo_map.clear();
+    ebo_map.clear();
+
+    if (shader_program != 0)
+    {
         glDeleteProgram(shader_program);
         shader_program = 0;
     }
@@ -118,12 +137,6 @@ void Renderer::CompileShader(const std::string &vert_path, const std::string &fr
     glDeleteShader(fragment_shader);
 }
 
-void Renderer::EnableDepthTestSetting()
-{
-    glEnable(GL_DEPTH_TEST);
-    glDepthFunc(GL_LESS);
-}
-
 void Renderer::UploadModel(const PLYModel &model)
 {
     // Prepare vertex data
@@ -146,6 +159,12 @@ void Renderer::UploadModel(const PLYModel &model)
     }
     num_face_indices = face_indices.size();
 
+    // Generate VAO, VBO, and EBO for the model
+    GLuint vao, vbo, ebo;
+    glGenVertexArrays(1, &vao);
+    glGenBuffers(1, &vbo);
+    glGenBuffers(1, &ebo);
+
     // Upload vertex data
     glBindVertexArray(vao);
 
@@ -163,6 +182,11 @@ void Renderer::UploadModel(const PLYModel &model)
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, face_indices.size() * sizeof(GLuint), face_indices.data(), GL_STATIC_DRAW);
 
     glBindVertexArray(0);
+
+    // Store VAO, VBO, and EBO in the maps
+    vao_map[&model] = vao;
+    vbo_map[&model] = vbo;
+    ebo_map[&model] = ebo;
 }
 
 void Renderer::UploadTransformMatrix()
@@ -179,14 +203,22 @@ void Renderer::MakeCameraFocusOnModel(const PLYModel &target_model)
     camera.look_at_model(model_center, model_radius);
 }
 
-void Renderer::Render()
+void Renderer::Render(const PLYMgr &plyManager)
 {
     glUseProgram(shader_program);
-
-    EnableDepthTestSetting();
     UploadTransformMatrix();
 
-    glBindVertexArray(vao);
-    glDrawElements(GL_TRIANGLES, num_face_indices, GL_UNSIGNED_INT, 0);
+    for (const auto &model : plyManager.models)
+    {
+        if (vao_map.find(&model) == vao_map.end())
+        {
+            std::cerr << "Error: VAO not found for model" << std::endl;
+            continue;
+        }
+
+        glBindVertexArray(vao_map[&model]);
+        glDrawElements(GL_TRIANGLES, model.faces.size() * 3, GL_UNSIGNED_INT, 0);
+    }
+
     glBindVertexArray(0);
 }

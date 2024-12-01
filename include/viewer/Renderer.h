@@ -1,9 +1,11 @@
 #pragma once
 #include "resource/PLYModel.h"
+#include "resource/PLYMgr.h"
 #include "camera/Camera.h"
 
 #include <glm/glm.hpp>
 #include <glad/glad.h>
+#include <unordered_map>
 
 struct Renderer
 {
@@ -16,20 +18,19 @@ public:
     void Initialize();
     void Clean();
 
-    void EnableDepthTestSetting();
-
     void UploadModel(const PLYModel &model);
     void UploadTransformMatrix();
 
     void MakeCameraFocusOnModel(const PLYModel &target_model);
     
-    void Render();
+    void Render(const PLYMgr &plyManager);
 
 private:
-    GLuint vao;              // Vertex Array Object
-    GLuint vbo;              // Vertex Buffer Object
-    GLuint ebo;              // Element Buffer Object for faces
     size_t num_face_indices; // Number of face indices
+    
+    std::unordered_map<const PLYModel *, GLuint> vao_map;
+    std::unordered_map<const PLYModel *, GLuint> vbo_map;
+    std::unordered_map<const PLYModel *, GLuint> ebo_map;
 
     GLuint shader_program;
 

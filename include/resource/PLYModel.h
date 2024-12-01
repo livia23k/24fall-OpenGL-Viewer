@@ -24,8 +24,11 @@ struct PLYModel
     bool is_triangulated;
     BBox bbox;
 
+    std::string name;
+    std::string type;
     std::vector<Vertex> vertices;
     std::vector<Face> faces;
+    uint32_t vertexBufferID;
 
     PLYModel();
     ~PLYModel() = default;

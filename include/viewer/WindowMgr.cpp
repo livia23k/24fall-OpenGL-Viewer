@@ -1,4 +1,5 @@
 #include "viewer/WindowMgr.h"
+#include "imgui/imgui.h"
 
 #include <iostream>
 
@@ -112,6 +113,9 @@ void WindowMgr::mouse_button_callback(GLFWwindow* window, int button, int action
 
 void WindowMgr::mouse_callback(GLFWwindow* window, double xposIn, double yposIn)
 {
+    if (ImGui::GetIO().WantCaptureMouse)
+        return;
+
     WindowMgr* mgr = static_cast<WindowMgr*>(glfwGetWindowUserPointer(window));
     if (!mgr)
         return;

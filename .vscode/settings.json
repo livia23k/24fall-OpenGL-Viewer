@@ -68,6 +68,10 @@
         "format": "cpp",
         "thread": "cpp",
         "*.txx": "cpp",
-        "cassert": "cpp"
+        "cassert": "cpp",
+        "typeindex": "cpp",
+        "*.ipp": "cpp",
+        "chrono": "cpp",
+        "text_encoding": "cpp"
     }
 }

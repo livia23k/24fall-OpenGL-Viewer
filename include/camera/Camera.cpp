@@ -31,7 +31,7 @@ Camera::Camera()
     unit_angle = 1.f;
     unit_sensitivity = 0.001f;
 
-    move_sensitivity = 0.8f;
+    move_sensitivity = 20.0f;
     mouse_sensitivity = 0.1f;
 
     this->look_at_model(glm::vec3(0.0f, 0.0f, 0.0f), 1.0f);
