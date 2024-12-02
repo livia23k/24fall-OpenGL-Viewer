@@ -5,8 +5,7 @@
 
 struct PLYMgr
 {
-    std::vector<PLYModel> models;
-    std::vector<PLYModel> favorites;
+    std::vector<std::shared_ptr<PLYModel>> models;
 
     PLYMgr() = default;
     ~PLYMgr() = default;

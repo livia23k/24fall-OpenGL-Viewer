@@ -6,7 +6,7 @@
 
 bool PLYMgr::LoadPLY(const std::string &filepath)
 {
-    PLYModel model;
+    auto model = std::make_shared<PLYModel>();
 
     std::ifstream file(filepath);
     if (!file.is_open())
@@ -80,7 +80,7 @@ bool PLYMgr::LoadPLY(const std::string &filepath)
         int r, g, b;
         float nx, ny, nz;
 
-        model.bbox.enclose(vertex.position);
+        model->bbox.enclose(vertex.position);
 
         if (vertex.position.y > 10000) {
             std::cerr << "Incorrect vertex position: " << vertex.position.x << ", " << vertex.position.y << vertex.position.z << std::endl;
@@ -103,7 +103,7 @@ bool PLYMgr::LoadPLY(const std::string &filepath)
             vertex.color = glm::vec3(0.0f, 1.0f, 0.0f); // Pre-defined color: Green
         }
         
-        model.vertices.push_back(vertex);
+        model->vertices.push_back(vertex);
     }
 
     // Load faces
@@ -125,15 +125,15 @@ bool PLYMgr::LoadPLY(const std::string &filepath)
             ss >> vertex_index;
             face.indices.push_back(vertex_index);
         }
-        model.faces.push_back(face);
+        model->faces.push_back(face);
     }
 
     // Emit edges
     // ...
 
     // Model info
-    model.name = std::filesystem::path(filepath).filename().string();
-    model.type = "Object";
+    model->name = std::filesystem::path(filepath).filename().string();
+    model->type = "Object";
 
     // Save model
     models.push_back(model);

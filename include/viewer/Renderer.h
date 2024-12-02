@@ -18,7 +18,7 @@ public:
     void Initialize();
     void Clean();
 
-    void UploadModel(const PLYModel &model);
+    void UploadModel(const std::shared_ptr<PLYModel> &model);
     void UploadTransformMatrix();
 
     void MakeCameraFocusOnModel(const PLYModel &target_model);
@@ -28,9 +28,9 @@ public:
 private:
     size_t num_face_indices; // Number of face indices
     
-    std::unordered_map<const PLYModel *, GLuint> vao_map;
-    std::unordered_map<const PLYModel *, GLuint> vbo_map;
-    std::unordered_map<const PLYModel *, GLuint> ebo_map;
+    std::unordered_map<std::shared_ptr<PLYModel>, GLuint> vao_map;
+    std::unordered_map<std::shared_ptr<PLYModel>, GLuint> vbo_map;
+    std::unordered_map<std::shared_ptr<PLYModel>, GLuint> ebo_map;
 
     GLuint shader_program;
 

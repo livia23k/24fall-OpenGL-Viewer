@@ -72,6 +72,16 @@
         "typeindex": "cpp",
         "*.ipp": "cpp",
         "chrono": "cpp",
-        "text_encoding": "cpp"
+        "text_encoding": "cpp",
+        "__hash_table": "cpp",
+        "__tree": "cpp",
+        "deque": "cpp",
+        "forward_list": "cpp",
+        "list": "cpp",
+        "map": "cpp",
+        "set": "cpp",
+        "unordered_set": "cpp",
+        "valarray": "cpp",
+        "ranges": "cpp"
     }
 }

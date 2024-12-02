@@ -19,10 +19,6 @@ void Application::RenderObjectLibraryPanel()
 {
     ImGui::Begin("Object Library & File Management");
 
-    // if (ImGui::Button("Import Environment"))
-    // {
-    //     // TODO: Add function to load .ply/.stl environment
-    // }
     if (ImGui::Button("Import Model"))
     {
         const char* filePath = tinyfd_openFileDialog(
@@ -39,7 +35,7 @@ void Application::RenderObjectLibraryPanel()
             if (plyManager.LoadPLY(filePath))
             {
                 renderer.UploadModel(plyManager.models.back());
-                renderer.MakeCameraFocusOnModel(plyManager.models.back());
+                renderer.MakeCameraFocusOnModel(*(plyManager.models.back()));
             }
             else
             {
@@ -51,11 +47,11 @@ void Application::RenderObjectLibraryPanel()
     ImGui::SeparatorText("Loaded Models");
     for (const auto& model : plyManager.models)
     {
-        ImGui::Text("Name: %s", model.name.c_str());
-        ImGui::Text("Type: %s", model.type.c_str());
-        if (ImGui::Button(("Focus on " + model.name).c_str()))
+        ImGui::Text("Name: %s", model->name.c_str());
+        ImGui::Text("Type: %s", model->type.c_str());
+        if (ImGui::Button(("Focus on " + model->name).c_str()))
         {
-            renderer.MakeCameraFocusOnModel(model);
+            renderer.MakeCameraFocusOnModel(*model);
         }
         ImGui::Separator();
     }
@@ -205,7 +201,7 @@ void Application::Clean()
 
 void Application::Run()
 {
-    renderer.MakeCameraFocusOnModel(plyManager.models[0]);
+    renderer.MakeCameraFocusOnModel(*(plyManager.models[0]));
 
     while (!windowManager.ShouldClose())
     {

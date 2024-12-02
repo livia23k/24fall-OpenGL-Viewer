@@ -5,6 +5,7 @@
 #include <vector>
 #include <stdint.h>
 #include <glm/glm.hpp>
+#include <glad/glad.h>
 
 struct Vertex
 {
@@ -21,14 +22,16 @@ struct Face
 
 struct PLYModel
 {
+    std::string name;
+    std::string type;
     bool is_triangulated;
     BBox bbox;
 
-    std::string name;
-    std::string type;
+    GLuint vao;
+    GLuint vbo;
+    GLuint ebo;
     std::vector<Vertex> vertices;
     std::vector<Face> faces;
-    uint32_t vertexBufferID;
 
     PLYModel();
     ~PLYModel() = default;

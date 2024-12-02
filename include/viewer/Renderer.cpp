@@ -137,11 +137,13 @@ void Renderer::CompileShader(const std::string &vert_path, const std::string &fr
     glDeleteShader(fragment_shader);
 }
 
-void Renderer::UploadModel(const PLYModel &model)
+void Renderer::UploadModel(const std::shared_ptr<PLYModel> &model)
 {
+    GLuint vao, vbo, ebo;
+
     // Prepare vertex data
     std::vector<float> vertex_data;
-    for (const auto &vertex : model.vertices)
+    for (const auto &vertex : model->vertices)
     {
         vertex_data.push_back(vertex.position.x);
         vertex_data.push_back(vertex.position.y);
@@ -153,14 +155,13 @@ void Renderer::UploadModel(const PLYModel &model)
 
     // Prepare face indices
     std::vector<GLuint> face_indices;
-    for (const auto &face : model.faces)
+    for (const auto &face : model->faces)
     {
         face_indices.insert(face_indices.end(), face.indices.begin(), face.indices.end());
     }
     num_face_indices = face_indices.size();
 
     // Generate VAO, VBO, and EBO for the model
-    GLuint vao, vbo, ebo;
     glGenVertexArrays(1, &vao);
     glGenBuffers(1, &vbo);
     glGenBuffers(1, &ebo);
@@ -184,9 +185,9 @@ void Renderer::UploadModel(const PLYModel &model)
     glBindVertexArray(0);
 
     // Store VAO, VBO, and EBO in the maps
-    vao_map[&model] = vao;
-    vbo_map[&model] = vbo;
-    ebo_map[&model] = ebo;
+    vao_map[model] = vao;
+    vbo_map[model] = vbo;
+    ebo_map[model] = ebo;
 }
 
 void Renderer::UploadTransformMatrix()
@@ -210,14 +211,14 @@ void Renderer::Render(const PLYMgr &plyManager)
 
     for (const auto &model : plyManager.models)
     {
-        if (vao_map.find(&model) == vao_map.end())
+        if (vao_map.find(model) == vao_map.end())
         {
             std::cerr << "Error: VAO not found for model" << std::endl;
             continue;
         }
 
-        glBindVertexArray(vao_map[&model]);
-        glDrawElements(GL_TRIANGLES, model.faces.size() * 3, GL_UNSIGNED_INT, 0);
+        glBindVertexArray(vao_map[model]);
+        glDrawElements(GL_TRIANGLES, model->faces.size() * 3, GL_UNSIGNED_INT, 0);
     }
 
     glBindVertexArray(0);
