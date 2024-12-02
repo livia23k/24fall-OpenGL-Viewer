@@ -41,6 +41,14 @@ Camera::~Camera()
 {
 }
 
+void Camera::reset_eular_angles()
+{
+    yaw = -90.0f;
+    pitch = 0.0f;
+
+    update_camera_vectors_from_eular_angles();
+}
+
 void Camera::reset_camera_control_status()
 {
     movements.up = false;

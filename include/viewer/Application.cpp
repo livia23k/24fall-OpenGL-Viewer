@@ -36,6 +36,8 @@ void Application::RenderObjectLibraryPanel()
             {
                 renderer.UploadModel(plyManager.models.back());
                 renderer.MakeCameraFocusOnModel(*(plyManager.models.back()));
+                windowManager.ResetMouseCenter();
+                renderer.camera.reset_eular_angles();
             }
             else
             {
@@ -52,6 +54,8 @@ void Application::RenderObjectLibraryPanel()
         if (ImGui::Button(("Focus on " + model->name).c_str()))
         {
             renderer.MakeCameraFocusOnModel(*model);
+            windowManager.ResetMouseCenter();
+            renderer.camera.reset_eular_angles();
         }
         ImGui::Separator();
     }

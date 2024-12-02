@@ -95,6 +95,15 @@ void WindowMgr::SwapBuffers()
     glfwSwapBuffers(window);
 }
 
+void WindowMgr::ResetMouseCenter()
+{
+    if (!window)
+        return;
+
+    last_x = window_w / 2.0f;
+    last_y = window_h / 2.0f;
+}
+
 
 void WindowMgr::mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 {
