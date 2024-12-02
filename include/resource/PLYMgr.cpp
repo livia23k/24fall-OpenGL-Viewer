@@ -20,6 +20,7 @@ bool PLYMgr::LoadPLY(const std::string &filepath)
     int face_count = 0;
     bool is_reading_header = true;
     bool has_rgb_info = false;
+    bool has_normal_info = false;
 
     // Parse the header
     while (is_reading_header && std::getline(file, line))
@@ -55,6 +56,14 @@ bool PLYMgr::LoadPLY(const std::string &filepath)
                     has_rgb_info = true;
                 }
             }
+            else if (token == "double")
+            {
+                ss >> token;
+                if (token == "nx")
+                {
+                    has_normal_info = true;
+                }
+            }
         }
     }
 
@@ -69,6 +78,7 @@ bool PLYMgr::LoadPLY(const std::string &filepath)
         std::istringstream ss(line);
         Vertex vertex;
         int r, g, b;
+        float nx, ny, nz;
 
         model.bbox.enclose(vertex.position);
 
@@ -77,6 +87,11 @@ bool PLYMgr::LoadPLY(const std::string &filepath)
         }
 
         ss >> vertex.position.x >> vertex.position.y >> vertex.position.z;
+
+        if (has_normal_info) // TOCHECK: pass the normal info
+        {
+            ss >> nx >> ny >> nz;
+        }
 
         if (has_rgb_info)
         {
