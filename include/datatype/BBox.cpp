@@ -59,3 +59,29 @@ std::vector<glm::vec3> BBox::get_corners()
     corners[7] = glm::vec3(max.x, max.y, max.z);
     return corners;
 }
+
+BBox BBox::get_transformed(const glm::mat4& transform)
+{
+    // List all 8 corners of the original bounding box
+    glm::vec3 corners[8] = {
+        min,
+        glm::vec3(min.x, min.y, max.z),
+        glm::vec3(min.x, max.y, min.z),
+        glm::vec3(min.x, max.y, max.z),
+        glm::vec3(max.x, min.y, min.z),
+        glm::vec3(max.x, min.y, max.z),
+        glm::vec3(max.x, max.y, min.z),
+        max
+    };
+
+    // Transform all corners
+    glm::vec3 new_min(FLT_MAX), new_max(-FLT_MAX);
+    for (const auto& corner : corners) {
+        glm::vec3 transformed_corner = glm::vec3(transform * glm::vec4(corner, 1.0f));
+        new_min = glm::min(new_min, transformed_corner);
+        new_max = glm::max(new_max, transformed_corner);
+    }
+
+    // Return the transformed BBox
+    return {new_min, new_max};
+}

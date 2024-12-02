@@ -6,6 +6,7 @@
 #include "tinyfd/tinyfiledialogs.h"
 
 #include <glad/glad.h>
+#include <glm/gtc/type_ptr.hpp>
 #include <iostream>
 #include <fstream>
 #include <sstream>
@@ -62,7 +63,7 @@ void Application::RenderObjectLibraryPanel()
             windowManager.ResetMouseCenter();
             renderer.camera.reset_eular_angles();
 
-            current_focusing_model = plyManager.models.back();
+            current_focusing_model = model;
         }
 
         ImGui::Separator();
@@ -86,15 +87,20 @@ void Application::RenderCameraAndViewControls()
     ImGui::Text("Quick View Presets");
     if (ImGui::Button("Top View"))
     {
-        // TODO: Set camera to top view
+        renderer.SetView("Top", *current_focusing_model); 
+        windowManager.ResetMouseCenter();
     }
+
     if (ImGui::Button("Front View"))
     {
-        // TODO: Set camera to front view
+        renderer.SetView("Front", *current_focusing_model);
+        windowManager.ResetMouseCenter();
     }
+
     if (ImGui::Button("Side View"))
     {
-        // TODO: Set camera to side view
+        renderer.SetView("Side", *current_focusing_model);
+        windowManager.ResetMouseCenter();
     }
 
     ImGui::End();
@@ -102,43 +108,55 @@ void Application::RenderCameraAndViewControls()
 
 void Application::RenderObjectManipulationPanel()
 {
+    if (!current_focusing_model)
+        return;
+
     ImGui::Begin("Object Manipulation & Properties");
 
     ImGui::SeparatorText("Item Details");
-    // ImGui::Text("Name: %s", currentModel.name.c_str());
-    // ImGui::Text("Manufacturer: %s", currentModel.manufacturer.c_str());
-    // ImGui::Text("Price: %.2f", currentModel.price);
-    // ImGui::Text("Size: %s", currentModel.size.c_str());
+    ImGui::Text("Name: %s", current_focusing_model->name.c_str());
+    ImGui::Text("Manufacturer: TBD");
+    ImGui::Text("Price: TBD");
+    ImGui::Text("Size: TBD");
 
-    ImGui::SeparatorText("Transform");
-    // ImGui::SliderFloat3("Translation", currentModel.translation, -10.0f, 10.0f);
-    // ImGui::SliderFloat3("Rotation", currentModel.rotation, -180.0f, 180.0f);
-    // ImGui::SliderFloat3("Scaling", currentModel.scaling, 0.1f, 10.0f);
-    if (ImGui::Button("Apply Transform"))
+    ImGui::SeparatorText("Model Transform");
+
+    if (ImGui::SliderFloat3("Translation", glm::value_ptr(current_focusing_model->translation), -10.0f, 10.0f))
     {
-        // TODO: Apply transformation to the selected model
+        UpdateModelMatrix(current_focusing_model);
     }
 
-    ImGui::SeparatorText("Appearance");
-    if (ImGui::Button("Toggle Color/Texture"))
+    if (ImGui::SliderFloat3("Rotation", glm::value_ptr(current_focusing_model->rotation), -180.0f, 180.0f))
     {
-        // TODO: Switch between color and texture
+        UpdateModelMatrix(current_focusing_model);
     }
 
-    ImGui::SeparatorText("Vertices Properties");
-    // if (ImGui::Checkbox("Show Normals", &currentModel.showNormals))
-    // {
-    //     // TODO: Toggle normal visualization
-    // }
-    // if (ImGui::Checkbox("Show Tangents", &currentModel.showTangents))
-    // {
-    //     // TODO: Toggle tangent visualization
-    // }
+    if (ImGui::SliderFloat3("Scaling", glm::value_ptr(current_focusing_model->scaling), 0.1f, 10.0f))
+    {
+        UpdateModelMatrix(current_focusing_model);
+    }
 
     ImGui::End();
 }
 
+void Application::UpdateModelMatrix(std::shared_ptr<PLYModel> model)
+{
+    if (!model)
+        return;
 
+    // Create transformation matrices
+    glm::mat4 translation_matrix = glm::translate(glm::mat4(1.0f), model->translation);
+    glm::mat4 rotation_matrix_x = glm::rotate(glm::mat4(1.0f), glm::radians(model->rotation.x), glm::vec3(1.0f, 0.0f, 0.0f));
+    glm::mat4 rotation_matrix_y = glm::rotate(glm::mat4(1.0f), glm::radians(model->rotation.y), glm::vec3(0.0f, 1.0f, 0.0f));
+    glm::mat4 rotation_matrix_z = glm::rotate(glm::mat4(1.0f), glm::radians(model->rotation.z), glm::vec3(0.0f, 0.0f, 1.0f));
+    glm::mat4 scaling_matrix = glm::scale(glm::mat4(1.0f), model->scaling);
+
+    // Combine transformations
+    model->model_matrix = translation_matrix * rotation_matrix_x * rotation_matrix_y * rotation_matrix_z * scaling_matrix;
+
+    // Update the transformed BBox
+    model->transformed_bbox = model->bbox.get_transformed(model->model_matrix);
+}
 
 void Application::Initialize()
 {
@@ -175,6 +193,7 @@ void Application::Initialize()
 
     // Create buffer for the Model
     renderer.UploadModel(plyManager.models[0]);
+    current_focusing_model = plyManager.models.back();
 
     // IMGUI Preparation
     // ----------------

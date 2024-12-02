@@ -27,6 +27,12 @@ struct PLYModel
     bool is_triangulated;
     bool should_render;
     BBox bbox;
+    BBox transformed_bbox;
+
+    glm::vec3 translation{0.0f};
+    glm::vec3 rotation{0.0f};
+    glm::vec3 scaling{1.0f};
+    glm::mat4 model_matrix{1.0f};
 
     GLuint vao;
     GLuint vbo;

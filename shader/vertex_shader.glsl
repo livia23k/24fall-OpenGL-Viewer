@@ -8,11 +8,12 @@ out vec3 Normal;
 out vec3 VertexColor;
 
 uniform mat4 transform;
+uniform mat4 model;
 
 void main()
 {
     Normal = aNormal;
     FragPos = aPos;
     VertexColor = aColor;
-    gl_Position = transform * vec4(aPos, 1.0);
+    gl_Position = transform * model * vec4(aPos, 1.0);
 }      

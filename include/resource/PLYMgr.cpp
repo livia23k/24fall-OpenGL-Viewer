@@ -183,6 +183,9 @@ bool PLYMgr::LoadPLY(const std::string &filepath)
     // Compute Normals
     ComputeNormals(model);
 
+    // BBox
+    model->transformed_bbox = model->bbox;
+
     // Model info
     model->name = std::filesystem::path(filepath).filename().string();
     model->type = "Object";

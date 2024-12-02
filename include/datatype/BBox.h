@@ -25,6 +25,7 @@ struct BBox
     inline glm::vec3 hmax(glm::vec3 l, glm::vec3 r);
 
     std::vector<glm::vec3> get_corners();
+    BBox get_transformed(const glm::mat4& transform);
 
     glm::vec3 min, max;
 };

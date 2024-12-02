@@ -63,6 +63,7 @@ struct Camera
     // Helper Functions
 
     void reset_eular_angles();
+    void fix_eular_angles();
     void reset_camera_control_status();
     void look_at_model(const glm::vec3 &model_center, float model_radius);
     void update_camera_vectors_from_eular_angles();
@@ -72,4 +73,8 @@ struct Camera
 
     void ProcessMouseMovement(float xoffset, float yoffset);
     void ProcessKeyboard(float deltaTime);
+
+    void SetTopView(const glm::vec3& target, float distance);
+    void SetFrontView(const glm::vec3& target, float distance);
+    void SetSideView(const glm::vec3& target, float distance);
 };

@@ -147,3 +147,27 @@ void Camera::ProcessKeyboard(float deltaTime)
     if (movements.down)
         position -= world_up * velocity;
 }
+
+void Camera::SetTopView(const glm::vec3& target, float distance)
+{
+    position = target + glm::vec3(0.0f, distance, 0.0f); // Move camera directly above the target
+    front = glm::normalize(target - position); // Look at the target
+    right = glm::normalize(glm::cross(front, glm::vec3(0.0f, 0.0f, 1.0f))); // Adjust right vector
+    world_up = glm::vec3(0.0f, 0.0f, -1.0f); // Set up direction to -Z
+}
+
+void Camera::SetFrontView(const glm::vec3& target, float distance)
+{
+    position = target + glm::vec3(0.0f, 0.0f, distance); // Move camera in front of the target
+    front = glm::normalize(target - position); // Look at the target
+    right = glm::normalize(glm::cross(front, glm::vec3(0.0f, 1.0f, 0.0f))); // Adjust right vector
+    world_up = glm::vec3(0.0f, 1.0f, 0.0f); // Set up direction to +Y
+}
+
+void Camera::SetSideView(const glm::vec3& target, float distance)
+{
+    position = target + glm::vec3(distance, 0.0f, 0.0f); // Move camera to the side of the target
+    front = glm::normalize(target - position); // Look at the target
+    right = glm::normalize(glm::cross(front, glm::vec3(0.0f, 1.0f, 0.0f))); // Adjust right vector
+    world_up = glm::vec3(0.0f, 1.0f, 0.0f); // Set up direction to +Y
+}

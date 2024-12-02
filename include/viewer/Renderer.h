@@ -22,6 +22,7 @@ public:
     void UploadTransformMatrix();
 
     void MakeCameraFocusOnModel(const PLYModel &target_model);
+    void SetView(const std::string& view_type, const PLYModel& target_model);
     
     void Render(const PLYMgr &plyManager);
 

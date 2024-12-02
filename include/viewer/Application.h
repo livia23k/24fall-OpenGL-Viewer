@@ -18,6 +18,7 @@ public:
     void RenderObjectLibraryPanel();
     void RenderCameraAndViewControls();
     void RenderObjectManipulationPanel();
+    void UpdateModelMatrix(std::shared_ptr<PLYModel> model);
 
 private:
     WindowMgr windowManager;

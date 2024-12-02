@@ -214,8 +214,8 @@ void Renderer::UploadTransformMatrix()
 
 void Renderer::MakeCameraFocusOnModel(const PLYModel &target_model)
 {
-    glm::vec3 model_center = target_model.bbox.center();
-    float model_radius = glm::length(target_model.bbox.max - target_model.bbox.min) * 0.5f;
+    glm::vec3 model_center = target_model.transformed_bbox.center();
+    float model_radius = glm::length(target_model.transformed_bbox.max - target_model.transformed_bbox.min) * 0.5f;
     camera.look_at_model(model_center, model_radius);
 }
 
@@ -237,9 +237,36 @@ void Renderer::Render(const PLYMgr &plyManager)
             continue;
         }
 
+        GLuint modelLoc = glGetUniformLocation(shader_program, "model");
+        glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model->model_matrix));
+
         glBindVertexArray(vao_map[model]);
         glDrawElements(GL_TRIANGLES, model->faces.size() * 3, GL_UNSIGNED_INT, 0);
     }
 
     glBindVertexArray(0);
+}
+
+void Renderer::SetView(const std::string& view_type, const PLYModel& target_model)
+{
+    glm::vec3 target = target_model.transformed_bbox.center(); // Get the center of the model
+    float radius = glm::length(target_model.transformed_bbox.max - target_model.transformed_bbox.min) * 0.5f; // Estimate model size
+    float distance = radius * 2.0f; // Adjust the camera distance based on the model size
+
+    if (view_type == "Top")
+    {
+        camera.SetTopView(target, distance);
+    }
+    else if (view_type == "Front")
+    {
+        camera.SetFrontView(target, distance);
+    }
+    else if (view_type == "Side")
+    {
+        camera.SetSideView(target, distance);
+    }
+    else
+    {
+        std::cerr << "Unknown view type: " << view_type << std::endl;
+    }
 }

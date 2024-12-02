@@ -5,7 +5,7 @@ in vec3 FragPos;
 in vec3 Normal;
 in vec3 VertexColor;
 
-const vec3 lightPos = vec3(5.0, 5.0, 5.0);
+const vec3 lightPos = vec3(10.0, 5.0, -5.0);
 const vec3 lightColor = vec3(1.0, 1.0, 1.0);
 const vec3 viewPos = vec3(0.0, 0.0, 5.0);
 
