@@ -4,6 +4,55 @@
 #include <fstream>
 #include <sstream>
 
+void PLYMgr::ComputeNormals(const std::shared_ptr<PLYModel>& model)
+{
+    if (!model)
+    {
+        std::cerr << "Error: Model is null. Cannot compute normals." << std::endl;
+        return;
+    }
+
+    // Initialize normals
+    for (auto &vertex : model->vertices)
+    {
+        vertex.normal = glm::vec3(0.0f);
+    }
+    // Compute face normals and accumulate them for each vertex
+    for (const auto &face : model->faces)
+    {
+        if (face.indices.size() < 3)
+        {
+            std::cerr << "Warning: Face with less than 3 vertices encountered. Skipping." << std::endl;
+            continue;
+        }
+
+        // Get the positions of the first three vertices in the face
+        const glm::vec3 &v0 = model->vertices[face.indices[0]].position;
+        const glm::vec3 &v1 = model->vertices[face.indices[1]].position;
+        const glm::vec3 &v2 = model->vertices[face.indices[2]].position;
+
+        // Compute the face normal using the cross product of two edges
+        glm::vec3 edge1 = v1 - v0;
+        glm::vec3 edge2 = v2 - v0;
+        glm::vec3 faceNormal = glm::normalize(glm::cross(edge1, edge2));
+
+        // Accumulate the face normal to each vertex normal of the face
+        for (int32_t index : face.indices)
+        {
+            model->vertices[index].normal += faceNormal;
+        }
+    }
+
+    // Normalize the accumulated normals for each vertex
+    for (auto &vertex : model->vertices)
+    {
+        vertex.normal = glm::normalize(vertex.normal);
+    }
+
+    std::cout << "Normals computed successfully for model: " << model->name << std::endl;
+}
+
+
 bool PLYMgr::LoadPLY(const std::string &filepath)
 {
     auto model = std::make_shared<PLYModel>();
@@ -130,6 +179,9 @@ bool PLYMgr::LoadPLY(const std::string &filepath)
 
     // Emit edges
     // ...
+
+    // Compute Normals
+    ComputeNormals(model);
 
     // Model info
     model->name = std::filesystem::path(filepath).filename().string();

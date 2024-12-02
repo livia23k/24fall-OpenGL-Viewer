@@ -139,6 +139,12 @@ void Renderer::CompileShader(const std::string &vert_path, const std::string &fr
 
 void Renderer::UploadModel(const std::shared_ptr<PLYModel> &model)
 {
+    if (!model)
+    {
+        std::cerr << "Error: Model is null. Cannot upload data." << std::endl;
+        return;
+    }
+
     GLuint vao, vbo, ebo;
 
     // Prepare vertex data
@@ -148,9 +154,15 @@ void Renderer::UploadModel(const std::shared_ptr<PLYModel> &model)
         vertex_data.push_back(vertex.position.x);
         vertex_data.push_back(vertex.position.y);
         vertex_data.push_back(vertex.position.z);
+
         vertex_data.push_back(vertex.color.r);
         vertex_data.push_back(vertex.color.g);
         vertex_data.push_back(vertex.color.b);
+
+        vertex_data.push_back(vertex.normal.x);
+        vertex_data.push_back(vertex.normal.y);
+        vertex_data.push_back(vertex.normal.z);
+
     }
 
     // Prepare face indices
@@ -172,11 +184,14 @@ void Renderer::UploadModel(const std::shared_ptr<PLYModel> &model)
     glBindBuffer(GL_ARRAY_BUFFER, vbo);
     glBufferData(GL_ARRAY_BUFFER, vertex_data.size() * sizeof(float), vertex_data.data(), GL_STATIC_DRAW);
 
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void *)0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 9 * sizeof(float), (void *)0);
     glEnableVertexAttribArray(0);
 
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void *)(3 * sizeof(float)));
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 9 * sizeof(float), (void *)(3 * sizeof(float)));
     glEnableVertexAttribArray(1);
+
+    glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 9 * sizeof(float), (void *)(6 * sizeof(float)));
+    glEnableVertexAttribArray(2);
 
     // Upload face indices
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);

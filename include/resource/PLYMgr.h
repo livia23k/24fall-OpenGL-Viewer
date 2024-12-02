@@ -11,4 +11,5 @@ struct PLYMgr
     ~PLYMgr() = default;
 
     bool LoadPLY(const std::string &filepath);
+    void ComputeNormals(const std::shared_ptr<PLYModel>& model);
 };
