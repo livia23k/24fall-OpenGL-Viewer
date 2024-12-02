@@ -3,6 +3,7 @@
 PLYModel::PLYModel()
 {
     is_triangulated = false;
+    should_render = true;
 
     vertices.clear();
     faces.clear();

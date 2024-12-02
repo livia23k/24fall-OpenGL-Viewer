@@ -25,6 +25,7 @@ struct PLYModel
     std::string name;
     std::string type;
     bool is_triangulated;
+    bool should_render;
     BBox bbox;
 
     GLuint vao;

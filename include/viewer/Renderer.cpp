@@ -32,8 +32,8 @@ void Renderer::Initialize()
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LESS);
 
-    glEnable(GL_CULL_FACE);
-    glCullFace(GL_BACK);
+    // glEnable(GL_CULL_FACE);
+    // glCullFace(GL_BACK);
 
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -214,6 +214,11 @@ void Renderer::Render(const PLYMgr &plyManager)
         if (vao_map.find(model) == vao_map.end())
         {
             std::cerr << "Error: VAO not found for model" << std::endl;
+            continue;
+        }
+
+        if (!model->should_render)
+        {
             continue;
         }
 

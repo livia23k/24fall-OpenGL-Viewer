@@ -9,6 +9,7 @@ struct Application
 {
 public:
     float last_frame;
+    std::shared_ptr<PLYModel> current_focusing_model;
 
     void Initialize();
     void Clean();

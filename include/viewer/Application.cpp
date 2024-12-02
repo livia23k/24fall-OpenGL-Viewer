@@ -38,6 +38,8 @@ void Application::RenderObjectLibraryPanel()
                 renderer.MakeCameraFocusOnModel(*(plyManager.models.back()));
                 windowManager.ResetMouseCenter();
                 renderer.camera.reset_eular_angles();
+
+                current_focusing_model = plyManager.models.back();
             }
             else
             {
@@ -51,12 +53,18 @@ void Application::RenderObjectLibraryPanel()
     {
         ImGui::Text("Name: %s", model->name.c_str());
         ImGui::Text("Type: %s", model->type.c_str());
+
+        ImGui::Checkbox(("Render " + model->name).c_str(), &(model->should_render));
+        
         if (ImGui::Button(("Focus on " + model->name).c_str()))
         {
             renderer.MakeCameraFocusOnModel(*model);
             windowManager.ResetMouseCenter();
             renderer.camera.reset_eular_angles();
+
+            current_focusing_model = plyManager.models.back();
         }
+
         ImGui::Separator();
     }
 
@@ -70,11 +78,9 @@ void Application::RenderCameraAndViewControls()
     ImGui::SeparatorText("Camera Movement");
     if (ImGui::Button("Reset View"))
     {
-        // TODO: Reset camera to initial position
-    }
-    if (ImGui::Button("Free Rotation Mode"))
-    {
-        // TODO: Enable free rotation
+        renderer.MakeCameraFocusOnModel(*(current_focusing_model));
+        windowManager.ResetMouseCenter();
+        renderer.camera.reset_eular_angles();
     }
 
     ImGui::Text("Quick View Presets");
